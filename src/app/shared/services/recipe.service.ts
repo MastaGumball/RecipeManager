@@ -1,38 +1,58 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Recipe} from "../../Recipe Book/recipes/recipe.model";
 import {IngredientModel} from "../ingredient.model";
 import {ShoppingService} from "./shopping.service";
+import {Subject} from "rxjs";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
 
-  private recipes: Recipe[] = [
-    new Recipe('Beef Stroganof', 'this is a test', 'https://sifu.unileversolutions.com/image/fr-BE/recipe-topvisual/2/1260-709/buf-stroganoff-a-la-vodka-50383541.jpg', [
-      new IngredientModel('beef', 1), new IngredientModel('pasta', 0.5)
-    ]),
-    new Recipe('Mac and cheese', 'this is another test', 'https://cdn.pratico-pratiques.com/app/uploads/sites/4/2019/04/10100532/mac-n-cheese-au-bacon-et-fromage-en-grains.jpg',[
-      new IngredientModel('beef', 1), new IngredientModel('pasta', 0.5)
-    ])
-  ];
+  private recipes: Recipe[] = [];
 
-  recipeSelected = new EventEmitter<Recipe>();
+  recipesChanged = new Subject<Recipe[]>();
 
-  constructor(private shoppingService: ShoppingService) { }
+  constructor(private shoppingService: ShoppingService,
+              private router: Router) { }
 
   getRecipes() {
     return this.recipes.slice();
   }
 
-/*  selectRecipe(recipe: Recipe) {
-    console.log(recipe);
-    this.recipeSelected.emit(recipe);
-  }*/
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.recipesChanged.next(this.getRecipes());
+  }
+
+  getRecipeById(id: number) {
+    return this.recipes.slice()[id];
+  }
+
 
   addIngredientsToShoppingList(ingredients: IngredientModel[]) {
     this.shoppingService.addMultipleIngredient(ingredients);
   }
 
+  addRecipe(recipe: Recipe) {
+    this.recipes.push(recipe);
+    this.recipesChanged.next(this.getRecipes());
+    this.router.navigate(['/recipes/'+ (this.recipes.length-1).toString()]);
+
+
+  }
+
+  updateRecipe(index: number, newRecipe: Recipe) {
+    this.recipes[index] = newRecipe;
+    this.recipesChanged.next(this.getRecipes());
+    this.router.navigate(['/recipes/'+ index.toString()]);
+  }
+
+  deleteRecipe(index: number) {
+    this.recipes.splice(index, 1);
+    this.recipesChanged.next(this.getRecipes());
+    this.router.navigate(['/recipes']);
+  }
 
 }
