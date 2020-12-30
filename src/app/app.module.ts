@@ -16,6 +16,7 @@ import {DropdownDirective} from './shared/dropdown.directive';
 import {RecipeEditComponent} from './Recipe Book/recipes/recipe-edit/recipe-edit.component';
 import {SelectRecipeComponent} from './Recipe Book/recipes/select-recipe/select-recipe.component';
 import {AuthComponent} from './auth/auth.component';
+import {LoadingSpinnerComponent} from './shared/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {AuthComponent} from './auth/auth.component';
     DropdownDirective,
     RecipeEditComponent,
     SelectRecipeComponent,
-    AuthComponent
+    AuthComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     BrowserModule,
