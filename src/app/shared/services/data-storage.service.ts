@@ -22,17 +22,19 @@ export class DataStorageService {
   }
 
   public fetchRecipes() {
+
     return this.httpClient.get<Recipe[]>('https://ng-complete-guide-32921-default-rtdb.europe-west1.firebasedatabase.app/recipe.json')
-      .pipe(map(recipes => {
-          return recipes.map(recipe => {
-            return {...recipe, ingredients: recipe.ingredients ? recipe.ingredients : []}
-          });
-        }),
-        tap( recipes =>{
-            this.recipeService.setRecipes(recipes);
-          })
-      );
+      .pipe(
+        map(recipes => {
+        return recipes.map(recipe => {
+          return {...recipe, ingredients: recipe.ingredients ? recipe.ingredients : []}
+        });
+      }),
+      tap(recipes => {
+        this.recipeService.setRecipes(recipes);
+      }));
   }
+
 
 
 }
